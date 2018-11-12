@@ -5,26 +5,23 @@
 
 int idx = 0;
 
-class MemoryBlock
-{
+class MemoryBlock {
 public:
     int id = idx++;
 
     // Simple constructor that initializes the resource.
-    explicit MemoryBlock(size_t length)
-        : _length(length)
-        , _data(new int[length])
-    {
-        std::cout <<"Id = [" << id << "]. In MemoryBlock(size_t). length = " << _length << "." << std::endl;
+    explicit MemoryBlock(size_t length) :
+            _length(length), _data(new int[length]) {
+        std::cout << "Id = [" << id << "]. In MemoryBlock(size_t). length = "
+                << _length << "." << std::endl;
     }
 
     // Destructor.
-    ~MemoryBlock()
-    {
-        std::cout << "Id = [" << id << "].  ~MemoryBlock(). length = " << _length << ".";
+    ~MemoryBlock() {
+        std::cout << "Id = [" << id << "].  ~MemoryBlock(). length = "
+                << _length << ".";
 
-        if (_data != nullptr)
-        {
+        if (_data != nullptr) {
             std::cout << " Deleting resource.";
             // Delete the resource.
             delete[] _data;
@@ -34,24 +31,23 @@ public:
     }
 
     // Copy constructor.
-    MemoryBlock(const MemoryBlock& other)
-        : _length(other._length)
-        , _data(new int[other._length])
-    {
-        std::cout << "Id = [" << id << "]. In MemoryBlock(const MemoryBlock&). length = "
-            << other._length << ". Copying resource." << std::endl;
+    MemoryBlock(const MemoryBlock& other) :
+            _length(other._length), _data(new int[other._length]) {
+        std::cout << "Id = [" << id
+                << "]. In MemoryBlock(const MemoryBlock&). length = "
+                << other._length << ". Copying resource." << std::endl;
 
         std::copy(other._data, other._data + _length, _data);
     }
 
     // Copy assignment operator.
-    MemoryBlock& operator=(const MemoryBlock& other)
-    {
-        std::cout << "Id = [" << id << "]. In operator=(const MemoryBlock&). length = "
-            << other._length << ". Copying and assign resource." << std::endl;
+    MemoryBlock& operator=(const MemoryBlock& other) {
+        std::cout << "Id = [" << id
+                << "]. In operator=(const MemoryBlock&). length = "
+                << other._length << ". Copying and assign resource."
+                << std::endl;
 
-        if (this != &other)
-        {
+        if (this != &other) {
             // Free the existing resource.
             delete[] _data;
 
@@ -63,18 +59,16 @@ public:
     }
 
     // Retrieves the length of the data resource.
-    size_t Length() const
-    {
+    size_t Length() const {
         return _length;
     }
 
     // Move constructor.
-    MemoryBlock(MemoryBlock&& other)
-        : _data(nullptr)
-        , _length(0)
-    {
-        std::cout << "Id = [" << id << "]. In MemoryBlock(MemoryBlock&&). length = "
-            << other._length << ". Moving resource." << std::endl;
+    MemoryBlock(MemoryBlock&& other) :
+            _data(nullptr), _length(0) {
+        std::cout << "Id = [" << id
+                << "]. In MemoryBlock(MemoryBlock&&). length = "
+                << other._length << ". Moving resource." << std::endl;
 
         // Copy the data pointer and its length from the
         // source object.
@@ -88,13 +82,12 @@ public:
     }
 
     // Move assignment operator.
-    MemoryBlock& operator=(MemoryBlock&& other)
-    {
-        std::cout << "Id = [" << id << "]. In operator=(MemoryBlock&&). length = "
-            << other._length << ". Moving and assign resource." <<  std::endl;
+    MemoryBlock& operator=(MemoryBlock&& other) {
+        std::cout << "Id = [" << id
+                << "]. In operator=(MemoryBlock&&). length = " << other._length
+                << ". Moving and assign resource." << std::endl;
 
-        if (this != &other)
-        {
+        if (this != &other) {
             // Free the existing resource.
             delete[] _data;
 
@@ -116,9 +109,28 @@ private:
     int* _data; // The resource.
 };
 
+void process_value(int& i) {
+    if (i == 2) {
+        i = 3;
+    }
+    std::cout << "LValue processed: " << i << std::endl;
+}
 
-int main(int argc, char const *argv[])
-{
+void process_value(int&& i) {
+    std::cout << "RValue processed: " << i << std::endl;
+}
+
+void forward_value(int&& i) {
+    process_value(i);
+}
+
+int main(int argc, char const *argv[]) {
+    std::cout << "---------Left value; Right Value------------" << std::endl;
+    int a = 0;
+    process_value(a);
+    process_value(1);
+    forward_value(2);
+
     std::cout << "--------------------------------------------" << std::endl;
     {
         std::vector<MemoryBlock> v;
